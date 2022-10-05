@@ -12,8 +12,8 @@ def write_xref_records(dat, fh):
         'old_gene', 
         'new_transcript', 
         'new_gene', 
-        'is_fusion', 
-        'was_kept'
+        'rearranged', 
+        'exemplar'
     ])
     fh.write(f"{line}\n")
 
