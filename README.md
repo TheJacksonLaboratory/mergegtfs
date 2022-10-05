@@ -148,7 +148,7 @@ set using `--p_exon_overlap`. The proportion is calculated as the overlap
 divided by the shorter exon's length. The proportion of exons required to 
 overlap to that degree is specified using `--p_exons_overlap`. That 
 proportion is calculated as the number of overlapping exons divided by the 
-number of exons in the transcript with the fewer exons. For 
+number of exons in the transcript with fewer exons. For 
 example, if `--p_exon_overlap` is set to `0.5`, then if one exon is 20 bases 
 long and the other is 30 bases long, the overlap would need to be at least 
 `0.5 * min(20, 30))`, or 10 bases long for the exons to have sufficient 
