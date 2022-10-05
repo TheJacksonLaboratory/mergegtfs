@@ -92,29 +92,28 @@ Accommodating potential genomic rearrangements which give rise to rearranged
 transcripts requires certain assumptions about the input GTF file. Exon 
 records for each transcript should be listed in the order they are found in 
 the final spliced transcript. If you are not interested in genomic 
-rearrangements/fusions, you can use the `--sort_exons` flag to sort exons 
-into their expected order (sorted by genomic start coordinate). It is also 
+rearrangements/fusions, and exons for a transcript are not in order, you can 
+use the `--sort_exons` flag to disregard exon order. It is also 
 assumed that exons on both the positive and negative strands are listed in 
 positive strand order. That is, for positive strand transcripts, the first 
 exon occuring in the spliced transcript should be listed first, and the last 
 exon listed last. By contrast, for negative strand transcripts, the last exon 
-will be listed first, and the first exon listed last. If your input GTF file 
-has negative transcripts in the opposite order (with the first exon of the 
-spliced transcript listed first in the GTF file), you can accommodate this 
-by setting the `--rev_neg_exons` flag to signal that negative strand order 
-is reversed relative to expectations. The `--sort_exons` flag will override 
-the `--rev_neg_exons` flag if both are specified.
+will be listed first, and the first exon listed last. One can accommodate GTF 
+files with negative strand transcripts exons in negative strand order by 
+setting the `--rev_neg_exons` flag. The `--sort_exons` flag will override the 
+`--rev_neg_exons` flag if both are specified.
 
 ---
 
 ## OUTPUTS
 
-Output is composed of a non-redundant GTF2.2 file, along with a tab-delimited 
-file mapping input identifiers to output identifiers. If several transcripts 
-are merged together, one is chosen as exemplar and serves as the sole 
-representative of the merged set in the output. The mapping file specifies 
-if the transcript appears to be rearranged or fused, as well as whether the 
-transcript was used as exemplar in the output. 
+Output is composed of a non-redundant GTF2.2 file containing transcript 
+records, and a tab-delimited file mapping input identifiers to output 
+identifiers. If several transcripts are merged together, one is chosen 
+as exemplar and serves as the sole representative of the merged set in 
+the output. The mapping file specifies if the transcript appears to be 
+rearranged or fused, as well as whether the transcript was used as exemplar 
+in the output. 
 
 #### Gory details
 
@@ -124,7 +123,7 @@ parameter `--output_prefix`.
 
 Transcripts are merged based on the tolerances set with `--tol_tss`, 
 `--tol_sj`, and `--tol_tts`. These tolerances are used when comparing 
-coordinates of corresponding exons from two different transcripts. If the 
+coordinates of corresponding exons from two transcripts. If the 
 strand or the number of exons differs between two transcripts, the transcripts 
 will not be merged. If, for any exon, the coordinates of the exon of one 
 transcript differ from those of the corresponding exon of the second 
@@ -149,23 +148,25 @@ set using `--p_exon_overlap`. The proportion is calculated as the overlap
 divided by the shorter exon's length. The proportion of exons required to 
 overlap to that degree is specified using `--p_exons_overlap`. That 
 proportion is calculated as the number of overlapping exons divided by the 
-number of exons in the transcript with the least number of exons. For 
+number of exons in the transcript with the fewer exons. For 
 example, if `--p_exon_overlap` is set to `0.5`, then if one exon is 20 bases 
 long and the other is 30 bases long, the overlap would need to be at least 
 `0.5 * min(20, 30))`, or 10 bases long for the exons to have sufficient 
-overlap to be counted. If `--p_exons_overlap` is set to `0.2`, if comparing 
+overlap to be counted. If we set `--p_exons_overlap` to `0.2`, then comparing 
 a 10 exon transcript with a 15 exon transcript, at least `0.2 * min(10, 15)`, 
-or 2 exons would need to sufficiently overlap. It doesn't matter which exons 
-match each other: if the third and sixth exons of the first transcript 
-overlapped with the eighth and second exons, respectively, of the second 
-transcript, the two transcripts would be matched. For comparisons involving 
-transcripts with 5 exons or fewer, at least one exon would need to overlap.
+or 2 exons would need to sufficiently overlap for the transcripts to be 
+assigned the same gene ID. It doesn't matter which exons match each other. If 
+the third and sixth exons of the first transcript overlapped with the eighth 
+and second exons, respectively, of the second transcript, the two transcripts 
+would be assigned the same gene ID. For comparisons involving transcripts 
+with 5 exons or fewer, at least one exon would need to overlap.
 
-Transcripts in the output GTF file are assigned new gene IDs and transcript 
-IDs. By default, gene IDs take the form `LOC.M` (e.g. `LOC.1374`), where `M` 
-is a sequentially assigned integer; and transcript IDs take the form `LOC.M.N` 
-(e.g. `LOC.1374.2`), where `LOC.M` corresponds to the associated gene ID and 
-`N` is a sequentially assigned integer. The prefix `LOC` can be changed using 
+Transcripts in the output GTF file are assigned new potentially shared gene 
+IDs and unique transcript IDs. By default, gene IDs take the form `LOC.M`, 
+where `M` is a sequentially assigned integer (e.g. `LOC.1374`). Transcript IDs 
+take the form `LOC.M.N`, where `LOC.M` corresponds to the associated gene ID, 
+and `N` is an integer sequentially assigned to transcripts associated with 
+that gene ID (e.g. `LOC.1374.2`). The prefix `LOC` can be changed using 
 the `--gene_prefix` parameter. Mappings from original identifiers to new 
 identifiers are found in `union.xrefs.tsv`. Transcripts that have unexpected 
 structures (e.g. due to interchromosomal fusions or local genomic 
@@ -173,13 +174,14 @@ rearrangements) are identified based on the following conditions:
 
 1) Exons on different chromosomes
 2) Exons on different strands
-3) Exons start coordinates out of order
+3) Exon start coordinates out of order
 4) Too much space between exons
 
 The amount of space allowed between exons can be adjusted with the 
-`--max_intron_length` parameter. Transcript rearrangement is flagged in the 
+`--max_intron_length` parameter. Fusions are named with the prefix `fusion`, 
+followed by a `.` delimited list of the genes to which the fusion maps to 
+(e.g. `fusion.gene_id1.gene_id2`). Transcript rearrangement is flagged in the 
 `rearranged` column of the `union.xrefs.tsv` file.
 
----
 
 
