@@ -8,6 +8,8 @@ import util
 def derive_starts(tranges, transcripts):
     '''
     starts and indices hierarchies in register w/ tranges
+      starts are starts of first exon of each transcript
+      indices are corresponding transcript_idxs
     '''
 
     starts = []
@@ -17,6 +19,7 @@ def derive_starts(tranges, transcripts):
         chr_starts = []
         chr_indices = []
         for trange in chr_trange:
+            ## start of first exon for transcript_idx trange[3]:
             chr_starts.append(transcripts[trange[3]][0][2])
             chr_indices.append(trange[3])
         starts.append(chr_starts)
@@ -111,6 +114,9 @@ def xref_transcripts(dat, params):
       params.tol_* determines stringency
     '''
 
+    ## starts are starts of first exon of each transcript;
+    ## indices are corresponding transcript_idxs;
+    ## everything in tranges hierarchy and order:
     print(f"  {util.elapsed(params)}: deriving starts")
     starts, indices = derive_starts(dat['tranges'], dat['transcripts'])
 
@@ -118,7 +124,7 @@ def xref_transcripts(dat, params):
     for idx1, transcript1 in enumerate(dat['transcripts']):
 
         if idx1 in dat['xrefs']:
-            continue
+            continue                     ## already merged
 
         maybe_list = match_starts(transcript1, starts, indices, params)
 
@@ -137,8 +143,20 @@ def xref_transcripts(dat, params):
               params.tol_sj,
               params.tol_tts
             ):
+                ## extend (retained) transcript1 to reach at least end of transcript2,
+                ##   transcripts_match() already ensures exon numbers match;
+                ##   sort ensures transcript1 start <= transcript2 start;
+                ##   this ensures transcript1 end >= transcript2 end as well:
+                idx_last = len(dat['transcripts'][idx1]) - 1
+                end1 = dat['transcripts'][idx1][idx_last][3]   ## 3'end of transcript1 
+                end2 = dat['transcripts'][idx2][idx_last][3]   ## 3'end of transcript2
+                if end1 < end2:
+                    dat['transcripts'][idx1][idx_last][3] = end2
+
+                ## cross-referencing xrefs[merged_idx] -> kept_idx:
                 dat['xrefs'][idx2] = idx1
                 dat['transcripts'][idx2] = None
+                idx_last = len(dat['transcripts'][idx1]) - 1
 
 
 def resolve_xrefs(dat):

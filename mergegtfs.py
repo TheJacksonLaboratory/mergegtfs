@@ -22,7 +22,7 @@ dat = {
   chr2idx: {chr_id0: 0, chr_id1: 1, chr_id2: 2, ...}
 
   ## strand == '-': 0; strand == '+': 1;
-  ## exon = [seq, strand, start, end]
+  ## exon = [chr_idx, strand, start, end]
   ## transcript = [exon1, exon2, ...]
   transcripts: [transcript0, transcript1, transcript2, ...]
   ## in register w/ transcripts; True only if exons on different 
@@ -39,7 +39,8 @@ dat = {
   ## gene_ids: f'{label}:{gtf_gene_id}'
   old_genes: [gene_id0, gene_id1, gene_id2, ... ]
 
-  ## tranges[i] corresponds to chrs[i]; transcript is transcripts[idx]:
+  ## tranges[i] corresponds to chrs[i]; transcript is transcripts[idx];
+  ##   sorted by start then end then strand then idx:
   tranges: [[[start, end, strand, idx], ...], ...] 
 
   ## initially, *_transcript = transcripts[*_idx]:

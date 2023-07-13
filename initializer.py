@@ -22,6 +22,9 @@ description = (
 )
 
 epilog = (
+    "The gtf_list_file is 2-column tab-delimited with one line per gtf input. "
+    "Each line should have a unique label (e.g. sample_id) followed by path to "
+    "a GTF2.2 file specifying the structures of associated transcripts/isoforms. "
     "Input GTF2.2 formatted files are required to have exon features "
     "with attributes that include 'gene_id' and 'transcript_id'. Output "
     "GTF2.2 formatted file includes 'exon' and 'transcript' features, both "

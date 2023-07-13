@@ -86,6 +86,8 @@ def ingest_exon(label, toks, id2idx, dat):
     Args:
       label: label for gtf file to be prepended to sequence ids
       toks: tokens from exon line in gtf file
+      id2idx:
+      dat: object to be updated
     Returns: None
     Side-effect: updates dat
 
@@ -164,7 +166,7 @@ def ingest_gtf_file(label, gtf, dat, params):
 def ingest_gtf_list_file(gtf_list_file):
     '''
     entry point
-    input: gtf_list_file: a text file w/ one path to gtf file per line
+    input: gtf_list_file: a tab-delimited text file w/ one path to gtf file per line
     output: dict of labels and gtf file paths {label0: path0, label1: path1, ...}
     '''
 
