@@ -39,48 +39,68 @@ cd mergegtfs
 ## SYNTAX
 
 ```
-usage: mergegtfs.py [-h] [--tol_sj TOL_SJ] [--tol_tss TOL_TSS] [--tol_tts TOL_TTS]
-                    [--p_exon_overlap P_EXON_OVERLAP] [--p_exons_overlap P_EXONS_OVERLAP]
-                    [--max_intron_length MAX_INTRON_LENGTH] [--sort_exons] [--rev_neg_exons]
-                    [--gene_prefix GENE_PREFIX] [--output_prefix OUTPUT_PREFIX]
+usage: mergegtfs.py [-h] [--tol_sj TOL_SJ] [--tol_tss TOL_TSS]
+                    [--tol_tts TOL_TTS] [--p_exon_overlap P_EXON_OVERLAP]
+                    [--p_exons_overlap P_EXONS_OVERLAP]
+                    [--max_intron_length MAX_INTRON_LENGTH] [--sort_exons]
+                    [--rev_neg_exons] [--gene_prefix GENE_PREFIX]
+                    [--output_prefix OUTPUT_PREFIX]
                     gtf_list_file
 
-Merges redundant transcripts from multiple GTF2.2 formatted files listed in gtf_list_file, resulting in a non-
-redundant union gtf.
+Merges redundant transcripts from multiple GTF2.2 formatted files listed in
+gtf_list_file, resulting in a non-redundant union gtf.
 
 positional arguments:
-  gtf_list_file         Tab-delimited file with 1 unique label followed by 1 GTF2.2 file path per line
+  gtf_list_file         Tab-delimited file with 1 unique label followed by 1
+                        GTF2.2 file path per line
 
 optional arguments:
   -h, --help            show this help message and exit
-  --tol_sj TOL_SJ       Tolerance (bp) for matching splice junction coordinates (default: 0)
-  --tol_tss TOL_TSS     Tolerance (bp) for matching transcript start coordinates (default: 0)
-  --tol_tts TOL_TTS     Tolerance (bp) for matching transcript end coordinates (default: 0)
+  --tol_sj TOL_SJ       Tolerance (bp) for matching splice junction
+                        coordinates (default: 0)
+  --tol_tss TOL_TSS     Tolerance (bp) for matching transcript start
+                        coordinates (default: 0)
+  --tol_tts TOL_TTS     Tolerance (bp) for matching transcript end
+                        coordinates (default: 0)
   --p_exon_overlap P_EXON_OVERLAP
-                        Minimum proportion overlap between two exons needed for gene matching (default: 0.5)
+                        Minimum proportion overlap between two exons needed
+                        for gene matching (default: 0.5)
   --p_exons_overlap P_EXONS_OVERLAP
-                        Minimum proportion of overlapping exons needed for gene matching (default: 0.1)
+                        Minimum proportion of overlapping exons needed for
+                        gene matching (default: 0.1)
   --max_intron_length MAX_INTRON_LENGTH
-                        Maximum expected intron size; used for identifying fusions (default: 1250000)
-  --sort_exons          For each transcript, sort exons in ascending order by (begin, end) (default: False)
-  --rev_neg_exons       For each transcript, reverse order of negative strand exons (default: False)
+                        Maximum expected intron size; used for identifying
+                        fusions (default: 1250000)
+  --sort_exons          For each transcript, sort exons in ascending order by
+                        (begin, end) (default: False)
+  --rev_neg_exons       For each transcript, reverse order of negative strand
+                        exons (default: False)
   --gene_prefix GENE_PREFIX
-                        Prefix for gene_ids and transcript_ids (default: LOC.)
+                        Prefix for gene_ids and transcript_ids (default:
+                        LOC.)
   --output_prefix OUTPUT_PREFIX
                         Prefix for output file names (default: union)
 
-Input GTF2.2 formatted files are required to have exon features with attributes that include 'gene_id' and
-'transcript_id'. Output GTF2.2 formatted file includes 'exon' and 'transcript' features, both with attributes
-(in order) 'gene_id' and 'transcript_id'. New gene_ids will be assigned in accordance with --p_exon_overlap
-(min overlap for matching exons) and --p_exons_overlap (min proportion of matched exons for matching gene_ids).
-New transcript_ids are assigned sequentially for each gene. New gene_ids and transcript_ids both have prefix
-specified by --gene_prefix. It is assumed that the order of exons in the input GTF file reflects the actual
-order in the spliced transcript; it is also assumed that for negative strand transcripts, the last exon is
-listed first, and the first exon is listed last. If the order of exon records for negative strand transcripts
-in the input GTF file begins with the last exon and ends with the first, make sure to set '--rev_neg_exons'. If
-the order of exons in the input file is indeterminate and does not reflect exon order in the transcript, please
-set '--sort_exons'; however, this may collapse isoforms where exon order really is shuffled due to e.g. local
-genomic rearrangement.
+The gtf_list_file is 2-column tab-delimited with one line per gtf input. Each
+line should have a unique label (e.g. sample_id) followed by path to a GTF2.2
+file specifying the structures of associated transcripts/isoforms. Input
+GTF2.2 formatted files are required to have exon features with attributes
+that include 'gene_id' and 'transcript_id'. Output GTF2.2 formatted file
+includes 'exon' and 'transcript' features, both with attributes (in order)
+'gene_id' and 'transcript_id'. New gene_ids will be assigned in accordance
+with --p_exon_overlap (min overlap for matching exons) and --p_exons_overlap
+(min proportion of matched exons for matching gene_ids). New transcript_ids
+are assigned sequentially for each gene. New gene_ids and transcript_ids both
+have prefix specified by --gene_prefix. It is assumed that the order of exons
+in the input GTF file reflects the actual order in the spliced transcript; it
+is also assumed that for negative strand transcripts, the last exon is listed
+first, and the first exon is listed last. If the order of exon records for
+negative strand transcripts in the input GTF file begins with the last exon
+and ends with the first, make sure to set '--rev_neg_exons'. If the order of
+exons in the input file is indeterminate and does not reflect exon order in
+the transcript, please set '--sort_exons'; however, this may collapse
+isoforms where exon order really is shuffled due to e.g. local genomic
+rearrangement.
 ```
 
 ---
