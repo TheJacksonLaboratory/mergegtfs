@@ -9,12 +9,15 @@ import os
 import re
 import socket
 import sys
+import textwrap
 import time
 
 ## local:
 
 import intypes
 import util
+
+version = "20230816a "
 
 description = (
     "Merges redundant transcripts from multiple GTF2.2 formatted "
@@ -45,9 +48,13 @@ epilog = (
 def build_parser():
 
     parser = argparse.ArgumentParser(
-        description = description,
-        epilog = epilog,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class = argparse.RawDescriptionHelpFormatter,
+        description = textwrap.dedent(f'''\
+        mergegtfs.py version {version}
+        --------------------------------
+        {description}
+        '''),
+        epilog = epilog
     )
 
     parser.add_argument(
@@ -135,6 +142,7 @@ def initialize():
     params.time_start = time_start
 
     print(
+        f"version: {version}\n"
         f"begin: {util.time_stamp()}\n"
         f"hostname: {socket.gethostname()}\n"
         f"working_directory: {os.getcwd()}"
